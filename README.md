@@ -1,14 +1,16 @@
-# AutoJudge: CP Problem Difficulty Estimator
+# ⚖️ AutoJudge: CP Problem Difficulty Estimator
 
 ## 📌 Project Overview
 
-**AutoJudge** is a machine learning project designed to analyze competitive programming (CP) problems and predict their:
+**AutoJudge** is a machine learning project designed to predict the competitive programming (CP) problems difficulty by analysing the textual description of problem and its input and output description (with constraints):
+
+This project perfoms two simultaneous task of predicting difficulty:
 
 1.  **Problem Class** (Classification): Categorizes problems into _Easy_, _Medium_, or _Hard_.
 
-    _Models are evaluated using accuracy and confusion matrices to analyze class-wise prediction performance across Easy, Medium, and Hard problems._
+    
 
-2.  **Problem Score** (Regression): Predicts the exact difficulty score (e.g., 800-3500 rating).
+2.  **Problem Score** (Regression): Predicts the difficulty score between 1 to 10.
 
 By analyzing the natural language in problem descriptions—specifically focusing on constraints, math notation (LaTeX), and algorithmic keywords—this model mimics how human competitive programmers assess difficulty.
 
@@ -45,7 +47,11 @@ We employed a **Hybrid Feature Approach** by stacking dense and sparse matrices:
 
 ### 3. Models Used
 
+
+
 - **Classification:** Naive Bayes, Support Vector Machine (SVM), Random Forest, XGBoost.
+
+_Models are evaluated using accuracy and confusion matrices to analyze class-wise prediction performance across Easy, Medium, and Hard problems._
 - **Regression:** \* **Ensemble Methods:** Voting Regressor (combining XGBoost, Random Forest, and CatBoost).
   - **Gradient Boosting:** LightGBM, CatBoost, XGBoost.
   - **Linear:** Bayesian Ridge (to handle high-dimensional sparse data).
@@ -107,8 +113,8 @@ _(Note: The Voting Regressor and CatBoost provided the lowest MAE in final testi
 
 ## 💻 Web Interface
 
-The project includes a user-friendly web interface (built with Streamlit):
-
+The project includes a user-friendly web interface (built with Flask):
+![alt text](/assets/autojudge_sample.png)
 1.  **Input Area:** Paste any competitive programming problem description.
 2.  **Constraint Extraction:** The app visualizes detected constraints (e.g., $N \le 10^5$).
 3.  **Prediction:** Displays the predicted Difficulty Class and precise Score.
@@ -117,12 +123,19 @@ The project includes a user-friendly web interface (built with Streamlit):
 
 [Link to 2-3 Minute YouTube/Drive Demo Video]
 
+- 0:00 - 0:30: Project Introduction.
+
+- 0:30 - 1:30:  Brief explanation of the code/model.
+
+- 1:30 - 2:30: Walkthrough of the Web Interface (Testing a problem).
+---
+
 ## 👨‍💻 Author
 
-**Manish** \* **System:** Arch Linux / Hyprland
+- **Name:** Manish Kumar gupta
 
-- **Contact:** [Your Email or LinkedIn]
-- **GitHub:** [Your GitHub Profile]
+- **Email:** manish_kg@bt.iitr.ac.in
+- **LinkedIn:** [Your GitHub Profile]
 
 ---
 
