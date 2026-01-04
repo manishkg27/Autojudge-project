@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoJudge AI</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>⚖️ AutoJudge</h1>
+            <p>Predicting Programming Problem Difficulty</p>
+        </header>
+
+        <div class="main-content">
+            <div class="form-section">
+                <label>Problem Description</label>
+                <textarea id="desc" placeholder="Paste the problem Description here..."></textarea>
+
+                <div class="row">
+                    <div class="half">
+                        <label>Input Description</label>
+                        <textarea id="input_desc" placeholder="Paste the input Description here... "></textarea>
+                    </div>
+                    <div class="half">
+                        <label>Output Description</label>
+                        <textarea id="output_desc" placeholder="paste the output Description here..."></textarea>
+                    </div>
+                </div>
+                <button onclick="clearFields()">Clear All Fields </button>
+                <button onclick="predictDifficulty()">Predict Complexity</button>
+            </div>
+
+            <div id="result-box" class="result-section hidden">
+                <div class="result-card">
+                    <h3>Predicted Class</h3>
+                    <p id="res-class" class="res-value"></p>
+                </div>
+                <div class="result-card">
+                    <h3>Difficulty Score</h3>
+                    <p id="res-score" class="res-value"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
