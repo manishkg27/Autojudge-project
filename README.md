@@ -2,122 +2,318 @@
 
 ## 📌 Project Overview
 
-**AutoJudge** is a machine learning project designed to predict the competitive programming (CP) problems difficulty by analysing the textual description of problem and its input and output description (with constraints):
+**AutoJudge** is a machine learning project designed to predict the difficulty of competitive programming (CP) problems by analyzing their textual content, including:
+- Problem description
 
-This project perfoms two simultaneous task of predicting difficulty:
+- Input description(with constraints)
+
+- Output description
+
+This ml project perfoms two simultaneous task of predicting difficulty:
 
 1.  **Problem Class** (Classification): Categorizes problems into _Easy_, _Medium_, or _Hard_.
-
-    
-
 2.  **Problem Score** (Regression): Predicts the difficulty score between 1 to 10.
+The system combines:
 
-By analyzing the natural language in problem descriptions—specifically focusing on constraints, math notation (LaTeX), and algorithmic keywords—this model mimics how human competitive programmers assess difficulty.
+    Text-based features (TF-IDF)
+
+    Length-based features (word counts, sentence counts)
+
+    Domain-specific features (keywords, constraints, modulo usage, limits)
+
+Multiple machine learning models are trained and evaluated, and the best-performing models are exported for deployment.
+
+A web interface allows users to paste a new problem statement and instantly receive predicted difficulty class and score.
+
 
 ## 📂 Dataset Used
 
 The project utilizes a dataset of competitive programming problems (`problems_data.jsonl`) containing:
 
-- **Description:** The main problem statement.
-- **Input/Output:** Format specifications and constraints.
-- **Tags/Class:** The ground truth difficulty level.
-- **Score:** The numerical difficulty rating.
+- **Description:** Full textual description of the problem statement.
+- **Input_description:** Explanation of the input format and constraints.
+- **Output_description:** Explanation of the expected output format.
+- **Tags/Class:** Difficulty category of the problem: 
+    - _Easy_
+    -  _Medium_
+    - _Hard_
+(_Easy_, _Medium_, or _Hard_).
+- **Score:** A numerical difficulty score (1-10) representing the relative hardness of the problem.
 
-_Note: The raw data was cleaned to handle missing values, and missing scores were imputed based on class averages._
 
-## ⚙️ Approach & Methodology
-
+## ⚙️ Approach & Models used
+This project uses a **classical machine learning approach with feature engineering** on problem statements, rather than deep NLP or transformer-based models.
 ### 1. Data Preprocessing & Cleaning
+The difficulty prediction is performed using **statistical text representations (TF-IDF)** combined with **manually engineered domain-specific features** extracted from competitive programming problems.
 
-Standard NLP cleaning is insufficient for CP problems because mathematical symbols are crucial.
+---
 
-- **Custom Regex Cleaning:** \* Converted LaTeX notation (e.g., `$10^9$`, `\le`) into standardized tokens (`10e9`, `<=`).
-  - Preserved magnitude information (e.g., distinguishing between $N=100$ and $N=10^5$).
-- **Normalization:** Lowercasing, stop-word removal, and tokenization.
+### 🔹 Feature Engineering
 
-### 2. Feature Engineering
+Three categories of features are used:
 
-We employed a **Hybrid Feature Approach** by stacking dense and sparse matrices:
+---
 
-- **TF-IDF Vectorization:** Extracted the top 3,000 frequent terms (n-grams) from the text.
-- **Domain-Specific Features (Manual Extraction):**
-  - **Keyword Counting:** Detected algorithmic terms like _'dp'_, _'graph'_, _'modulo'_, _'tree'_.
-  - **Constraint Detection:** Binary flags for time limits, memory limits, and variable bounds ($10^5$ vs $10^{18}$).
-  - **Text Statistics:** Length of description, input/output word counts.
+### 📝 1. Text Vectorization (TF-IDF)
 
-### 3. Models Used
+- Problem text is formed by concatenating:
+  - `description`
+  - `input_description`
+  - `output_description`
+- Text preprocessing includes:
+  - Lowercasing
+  - Tokenization (NLTK)
+  - Stopword removal
+  - Stemming (Porter Stemmer)
+  - Custom rules to preserve competitive programming constructs such as:
+    - `10^5`, `10^9 + 7`, `998244353`
+    - Mathematical operators and variables (`n`, `m`, `k`)
+- Cleaned text is converted into numerical features using:
+  - **TF-IDF Vectorizer (`max_features = 3000`)**
 
+This captures the importance of words without using deep language models.
 
+---
 
-- **Classification:** Naive Bayes, Support Vector Machine (SVM), Random Forest, XGBoost.
+### 📏 2. Length-Based Statistical Features
 
-_Models are evaluated using accuracy and confusion matrices to analyze class-wise prediction performance across Easy, Medium, and Hard problems._
-- **Regression:** \* **Ensemble Methods:** Voting Regressor (combining XGBoost, Random Forest, and CatBoost).
-  - **Gradient Boosting:** LightGBM, CatBoost, XGBoost.
-  - **Linear:** Bayesian Ridge (to handle high-dimensional sparse data).
+To capture structural complexity of problems, the following features are added:
+
+- Word count in problem description
+- Word count in input description
+- Word count in output description
+
+These features help differentiate simple problems from long, constraint-heavy ones.
+
+---
+
+### 🧠 3. Domain-Specific Keyword & Constraint Features
+
+Competitive programming knowledge is encoded using manually extracted features.
+
+#### Keyword Frequency Features
+Counts of important terms such as:
+- Algorithms: `dp`, `greedy`, `binary search`, `dfs`, `bfs` ...
+- Data structures: `array`, `tree`, `graph`, `segment tree` ...
+- Problem patterns: `subarray`, `substring`, `bitmask`, `two pointers` ...
+
+#### Constraint Indicators
+Binary features detecting:
+- Input size limits (`10^5`, `10^6`, `10^9`, `10^18`)
+- Modulo arithmetic (`10^9 + 7`, `998244353`)
+- Time and memory constraints
+
+All non-text features are normalized using **MinMaxScaler** and concatenated with TF-IDF vectors.
+
+---
+
+### 🔹 Classification Models (Problem Class Prediction)
+
+The classification task predicts:
+**Easy / Medium / Hard**
+
+The following models were trained and evaluated:
+
+- Naive Bayes (Multinomial, Bernoulli)
+- Logistic Regression
+- Support Vector Machines (Linear, RBF, Sigmoid)
+- K-Nearest Neighbors
+- Decision Tree
+- Random Forest (multiple configurations)
+- Extra Trees Classifier
+- Gradient Boosting Classifier
+- XGBoost Classifier
+- Voting Classifier (Random Forest + Extra Trees)
+
+**Best performing classifiers:**
+- **Random Forest Classifier**
+- **Voting Classifier (RF + Extra Trees)**
+
+These models handle high-dimensional text features, class imbalance, and non-linear relationships effectively.
+
+---
+
+### 🔹 Regression Models (Problem Score Prediction)
+
+The regression task predicts a **numerical difficulty score**.
+
+Models evaluated:
+
+- Linear Regression
+- Ridge Regression
+- Bayesian Ridge Regression
+- Support Vector Regressor (SVR)
+- K-Nearest Neighbors Regressor
+- Decision Tree Regressor
+- Random Forest Regressor (tuned)
+- Extra Trees Regressor (tuned)
+- Gradient Boosting Regressor
+- XGBoost Regressor
+
+**Best performing regressors:**
+- Tuned **Gradient Boosting Regressor**
+- Tuned **Extra Trees Regressor**
+
+These achieved the lowest MAE and RMSE among tested models.
+
+---
+
+### 🔹 Why This Approach Works
+
+- TF-IDF effectively captures important terms without requiring large datasets
+- Length and constraint features represent problem complexity
+- Tree-based ensemble models learn non-linear feature interactions
+- The approach is interpretable, lightweight, and deployment-friendly
+
+---
+
+### 🔹 Model Export
+
+Final models and preprocessing artifacts are saved using **Joblib**:
+- Difficulty classifier
+- Difficulty score regressor
+- TF-IDF vectorizer
+- Feature scaler
+- Label encoder
+
+These files are used directly by the web interface for real-time prediction.
 
 ## 📊 Evaluation Metrics
 
-| Metric       | Description                                                | Best Model Performance |
-| :----------- | :--------------------------------------------------------- | :--------------------- |
-| **Accuracy** | Percentage of correct Class predictions (Easy/Med/Hard)    | _~XX% (e.g., 85%)_     |
-| **MAE**      | Mean Absolute Error (Average deviation in predicted score) | _~XX.X (e.g., 150.4)_  |
-| **RMSE**     | Root Mean Squared Error (Penalizes large errors)           | _~XX.X_                |
+The models were evaluated separately for **classification** and **regression** tasks using standard machine learning metrics.
+---
+### 🔹 Classification Metrics (Problem Class)
 
-_(Note: The Voting Regressor and CatBoost provided the lowest MAE in final testing.)_
+| Metric       | Description                                                  |
+|-------------|--------------------------------------------------------------|
+| **Accuracy** | Percentage of correctly predicted difficulty classes (Easy / Medium / Hard) |
 
-## 🚀 Steps to Run Locally
+- Accuracy was computed using a stratified train–test split.
+- Multiple models were compared, including SVM, Random Forest, Extra Trees, XGBoost, and ensemble methods.
+- **Best performance was achieved using:**
+  - Tuned **Random Forest Classifier**
+  - **Voting Classifier (Random Forest + Extra Trees)**
 
-### Prerequisites
+---
 
-- Python 3.8+
+### 🔹 Regression Metrics (Problem Score)
+
+| Metric  | Description                                                        |
+|-------|--------------------------------------------------------------------|
+| **MAE** | Mean Absolute Error — average absolute difference between predicted and true scores |
+| **RMSE** | Root Mean Squared Error — penalizes larger prediction errors       |
+| **R²** | Measures how well the regression model explains variance in scores |
+
+- Regression performance was evaluated using MAE, RMSE, and R² score.
+- Multiple regressors were compared, including Linear, Ridge, SVR, Random Forest, Extra Trees, Gradient Boosting, and XGBoost.
+- **Best performance was achieved using:**
+  - Tuned **Gradient Boosting Regressor**
+  - Tuned **Extra Trees Regressor**
+
+---
+
+## 🚀 Steps to Run the Project Locally
+
+### 🔧 Prerequisites
+
+- Python **3.8 or higher**
 - pip
+- Git
 
-### Installation
+---
 
-1.  **Clone the repository:**
+### 📦 Installation
 
-    ```bash
-    git clone [https://github.com/your-username/autojudge.git](https://github.com/your-username/autojudge.git)
-    cd autojudge
-    ```
+#### 1. Clone the Repository
 
-2.  **Create a Virtual Environment (Recommended):**
+```bash
+git clone https://github.com/manishkg27/Autojudge-project.git
 
-    ```bash
-    python -m venv venv
-    # Windows
-    venv\Scripts\activate
-    # Linux/Mac
-    source venv/bin/activate
-    ```
+cd autojudge
+```
 
-3.  **Install Dependencies:**
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+#### 2. Create a Virtual Environment (Recommended):
 
-    _(Ensure `lightgbm` and `catboost` are installed successfully. On Linux, you may need `libomp`)._
+```bash
+python -m venv venv
+# Windows
+venv\Scripts\activate
+# Linux/Mac
+source venv/bin/activate
+  ```
 
-4.  **Run the Training Script:**
+#### 3.  **Install Dependencies:**
 
-    ```bash
-    python train_model.py
-    ```
+```bash
+pip install -r requirements.txt
+  ```
 
-5.  **Launch the Web Interface:**
-    ```bash
-    streamlit run app.py
-    ```
-
+#### 4.  **Launch the Web Interface:**
+```bash
+python app.py
+  ```
+Once the server starts, open your browser and go to: 
+http://127.0.0.1:8000 or ***ctrl + click*** on the link provided in your terminal.
 ## 💻 Web Interface
 
-The project includes a user-friendly web interface (built with Flask):
+The project includes a **user-friendly web interface** built using **Flask** for the backend and **HTML, CSS, and JavaScript** for the frontend.
 ![alt text](/assets/autojudge_sample.png)
-1.  **Input Area:** Paste any competitive programming problem description.
-2.  **Constraint Extraction:** The app visualizes detected constraints (e.g., $N \le 10^5$).
-3.  **Prediction:** Displays the predicted Difficulty Class and precise Score.
+### 🔹 Overview
+
+The web interface allows users to **paste a competitive programming problem** and instantly get:
+- Predicted **difficulty class** (Easy / Medium / Hard)
+- Predicted **difficulty score** (numerical)
+
+The interface is designed to be simple, clean, and intuitive, making it suitable for students, educators, and competitive programmers.
+
+---
+
+### ✍️ Input Fields
+
+The user provides the following inputs:
+
+- **Problem Description**  
+  Full statement describing the problem logic.
+
+- **Input Description**  
+  Explanation of input format and constraints.
+
+- **Output Description**  
+  Explanation of expected output.
+
+---
+
+### ⚙️ How It Works (Request Flow)
+
+1. User enters the problem text and clicks **“Predict Complexity”**
+2. Frontend sends a **POST request** to the Flask backend (`predict`)
+3. Backend performs:
+   - Text cleaning and normalization
+   - TF-IDF vectorization
+   - Feature extraction (length + domain-specific features)
+   - Model inference using trained ML models
+4. Backend returns a JSON response containing:
+   - Predicted difficulty class
+   - Predicted difficulty score
+5. Results are displayed instantly on the UI without page reload
+
+---
+
+### 📤 Output Display
+
+The results are shown in dedicated sections:
+
+- **Predicted Class** → Easy / Medium / Hard  
+- **Difficulty Score** → Numerical score (rounded to 2 decimals)
+
+---
+
+### 🧹 Additional Features
+
+- **Clear All Fields** button to reset inputs
+- Real-time prediction without page refresh
+- Runs fully **locally** using Flask
 
 ## 🎥 Demo Video
 
@@ -132,11 +328,12 @@ The project includes a user-friendly web interface (built with Flask):
 
 ## 👨‍💻 Author
 
-- **Name:** Manish Kumar gupta
+- **Name:** Manish Kumar Gupta
 
+- 🎓 B.Tech Student, IIT Roorkee 
 - **Email:** manish_kg@bt.iitr.ac.in
-- **LinkedIn:** [Your GitHub Profile]
-
+- **LinkedIn:** https://www.linkedin.com/in/manish-kumar-gupta-17ba45312?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app
+- Github: https://github.com/manishkg27
 ---
 
-_Built with ❤️ using Python, Scikit-Learn, and Arch Linux._
+_Built with ❤️ using Python, Scikit-Learn, and Arch Linux(btw)._
