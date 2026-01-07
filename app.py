@@ -58,7 +58,11 @@ constraint_patterns = {
     # Context Indicators (New!)
     # Matches "sum of n", "∑ n", "sum of m", etc.
     "sum_context": r"(?:sum of|∑|total)\s?[a-zA-Z0-9_]*",
-
+    "math_xor": r"(\\oplus|⊕|xor)",
+    "math_infinity": r"(\\infty|∞)",
+    "math_fraction": r"(\\frac|/)",
+    "math_equality": r"(==|!=|\\ne|\\equiv)",
+    
     # Modulo arithmetic
     "modulo": r"(mod(ulo)?|1e9\s?\+\s?7|10\^9\s?\+\s?7|1000000007|998244353)",
 

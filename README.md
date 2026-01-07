@@ -13,13 +13,14 @@ This ml project perfoms two simultaneous task of predicting difficulty:
 
 1.  **Problem Class** (Classification): Categorizes problems into _Easy_, _Medium_, or _Hard_.
 2.  **Problem Score** (Regression): Predicts the difficulty score between 1 to 10.
+
 The system combines:
 
-    Text-based features (TF-IDF)
+  - Text-based features (TF-IDF)
 
-    Length-based features (word counts, sentence counts)
+  - Length-based features (word counts, sentence counts)
 
-    Domain-specific features (keywords, constraints, modulo usage, limits)
+  - Domain-specific features (keywords, constraints, modulo usage, limits)
 
 Multiple machine learning models are trained and evaluated, and the best-performing models are exported for deployment.
 
@@ -51,7 +52,6 @@ The difficulty prediction is performed using **statistical text representations 
 ### 🔹 Feature Engineering
 
 Three categories of features are used:
-
 ---
 
 ### 📝 1. Text Vectorization (TF-IDF)
@@ -137,7 +137,7 @@ These models handle high-dimensional text features, class imbalance, and non-lin
 
 The regression task predicts a **numerical difficulty score**.
 
-Models evaluated:
+The following models were trained and evaluated:
 
 - Linear Regression
 - Ridge Regression
@@ -258,16 +258,9 @@ http://127.0.0.1:8000 or ***ctrl + click*** on the link provided in your termina
 ## 💻 Web Interface
 
 The project includes a **user-friendly web interface** built using **Flask** for the backend and **HTML, CSS, and JavaScript** for the frontend.
-![alt text](/assets/autojudge_sample.png)
-### 🔹 Overview
-
-The web interface allows users to **paste a competitive programming problem** and instantly get:
-- Predicted **difficulty class** (Easy / Medium / Hard)
-- Predicted **difficulty score** (numerical)
-
-The interface is designed to be simple, clean, and intuitive, making it suitable for students, educators, and competitive programmers.
-
----
+<p align="left">
+  <img src="assets/autojudge_sample.png" width="40%">
+</p>
 
 ### ✍️ Input Fields
 
