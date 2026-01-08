@@ -249,7 +249,7 @@ The regression task aimed to predict a specific difficulty score. Performance wa
 ```bash
 git clone https://github.com/manishkg27/Autojudge-project.git
 
-cd autojudge
+cd Autojudge-project
 ```
 
 
