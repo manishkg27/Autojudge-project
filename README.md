@@ -181,36 +181,56 @@ These files are used directly by the web interface for real-time prediction.
 ## 📊 Evaluation Metrics
 
 The models were evaluated separately for **classification** and **regression** tasks using standard machine learning metrics.
----
-### 🔹 Classification Metrics (Problem Class)
 
-| Metric       | Description                                                  |
-|-------------|--------------------------------------------------------------|
-| **Accuracy** | Percentage of correctly predicted difficulty classes (Easy / Medium / Hard) |
+### 🔹 Classification Results
+The classification task focused on predicting the discrete difficulty level of a problem. Tree-based ensemble models consistently outperformed linear and probabilistic models due to their ability to capture non-linear relationships between textual and structural features.
 
-- Accuracy was computed using a stratified train–test split.
-- Multiple models were compared, including SVM, Random Forest, Extra Trees, XGBoost, and ensemble methods.
-- **Best performance was achieved using:**
-  - Tuned **Random Forest Classifier**
-  - **Voting Classifier (Random Forest + Extra Trees)**
+#### Model Performance Comparison
+| Model | Accuracy (%) |
+| :--- | :---: |
+| **Random Forest (Best)** | **53.50%** |
+| Voting Classifier (RF + ETC) | 52.11% |
+| Extra Trees | 51.21% |
+| XGBoost | 50.83% |
+| SVM (Linear) | 50.44% |
+| Bagging Classifier | 49.80% |
+| Multinomial Naive Bayes | 49.04% |
+| Gradient Boosting | 48.78% |
 
----
+#### Key Observations
+* **Class Performance:** The models performed best on the **Medium** class, correctly identifying a large majority of Medium-level problems.
+* **Confusion Patterns:** Misclassifications primarily occurred between **adjacent difficulty levels** (e.g., Easy misclassified as Medium, or Medium as Hard). This indicates that the models successfully captured the relative ordering of difficulty.
+* **Ensemble Stability:** While the **Voting Classifier** provided high stability, the **Tuned Random Forest** achieved the peak individual accuracy.
 
-### 🔹 Regression Metrics (Problem Score)
 
-| Metric  | Description                                                        |
-|-------|--------------------------------------------------------------------|
-| **MAE** | Mean Absolute Error — average absolute difference between predicted and true scores |
-| **RMSE** | Root Mean Squared Error — penalizes larger prediction errors       |
-| **R²** | Measures how well the regression model explains variance in scores |
-
-- Regression performance was evaluated using MAE, RMSE, and R² score.
-- Multiple regressors were compared, including Linear, Ridge, SVR, Random Forest, Extra Trees, Gradient Boosting, and XGBoost.
-- **Best performance was achieved using:**
-  - Tuned **Gradient Boosting Regressor**
-  - Tuned **Extra Trees Regressor**
 
 ---
+
+### 🔹 Regression Results
+The regression task aimed to predict a specific difficulty score. Performance was measured using Mean Absolute Error (MAE), Root Mean Squared Error (RMSE), and the Coefficient of Determination ($R^2$).
+
+#### Model Performance Comparison
+| Model | MAE | RMSE | $R^2$ |
+| :--- | :---: | :---: | :---: |
+| **Extra Trees (Tuned)** | **1.619** | **1.939** | **0.190** |
+| SVR | 1.626 | 1.956 | 0.176 |
+| Ridge Regression | 1.630 | 1.946 | 0.184 |
+| Bayesian Ridge | 1.634 | 1.948 | 0.182 |
+| Random Forest (Tuned) | 1.638 | 1.965 | 0.169 |
+| Gradient Boosting (Tuned) | 1.662 | 1.993 | 0.145 |
+| XGBoost | 1.706 | 2.076 | 0.071 |
+| AdaBoost | 1.741 | 2.063 | 0.084 |
+
+#### Key Observations
+* **Top Performer:** The **Extra Trees Regressor** achieved the lowest MAE and RMSE, making it the most reliable model for score estimation.
+* **Linear vs. Non-Linear:** Linear models showed higher error rates compared to ensemble methods, confirming that difficulty prediction is a complex, non-linear problem.
+* **Error Penalties:** The relatively low RMSE across the top models suggests that the regressors are not prone to making extreme outliers in their predictions.
+
+---
+
+### 🏆 Final Summary
+* **Best Classifier:** Random Forest (Accuracy: 53.50%)
+* **Best Regressor:** Extra Trees (MAE: 1.619)
 
 ## 🚀 Steps to Run the Project Locally
 
@@ -310,13 +330,13 @@ The results are shown in dedicated sections:
 
 ## 🎥 Demo Video
 
-[Link to 2-3 Minute YouTube/Drive Demo Video]
+https://drive.google.com/file/d/1GhqcWIZrpCz9jdGHJbFmbBtTYXVu3GJH/view?usp=sharing
 
-- 0:00 - 0:30: Project Introduction.
+- 0:00 - 0:33: Project Introduction.
 
-- 0:30 - 1:30:  Brief explanation of the code/model.
+- 0:33 - 3:21:  Brief explanation of the code/model.
 
-- 1:30 - 2:30: Walkthrough of the Web Interface (Testing a problem).
+- 3:21 - 5:00: Walkthrough of the Web Interface (Testing a problem).
 ---
 
 ## 👨‍💻 Author
