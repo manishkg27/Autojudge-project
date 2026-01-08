@@ -279,7 +279,7 @@ http://127.0.0.1:8000 or ***ctrl + click*** on the link provided in your termina
 
 The project includes a **user-friendly web interface** built using **Flask** for the backend and **HTML, CSS, and JavaScript** for the frontend.
 <p align="left">
-  <img src="assets/autojudge_sample.png" width="40%">
+  <img src="assets/autojudge_sample.png" width="70%">
 </p>
 
 ### ✍️ Input Fields
